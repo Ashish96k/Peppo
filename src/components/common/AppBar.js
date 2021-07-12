@@ -29,7 +29,12 @@ const AppBar = () => {
 
       {/* Pending Task */}
       <View style={styles.headerPendingContainer}>
-        <Text style={styles.headerPendingText}>Pending Tasks: 6</Text>
+        <View style={styles.headerPendingTextContainer}>
+          <Text style={styles.headerPendingText}>Pending Tasks</Text>
+        </View>
+        <View style={styles.headerPendingNumberContainer}>
+          <Text style={styles.headerPendingNumber}>6</Text>
+        </View>
       </View>
 
       {/* Spacing */}
@@ -53,10 +58,30 @@ const styles = StyleSheet.create({
   },
   headerPendingContainer: {
     // backgroundColor: "red",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerPendingTextContainer: {
+    paddingHorizontal: 6,
   },
   headerPendingText: {
     fontSize: RFValue(12),
     color: "white",
+    fontWeight: "bold",
+  },
+  headerPendingNumberContainer: {
+    paddingHorizontal: 6,
+    backgroundColor: "white",
+    height: 20,
+    width: 20,
+    borderRadius: hp(100),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerPendingNumber: {
+    color: constants.primary,
+    fontSize: RFValue(12),
     fontWeight: "bold",
   },
 });

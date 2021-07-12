@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     width: wp(90),
     marginVertical: 10,
     marginHorizontal: 10,
-    paddingVertical: 20,
+    paddingVertical: 14,
     paddingHorizontal: 10,
     shadowColor: constants.primary,
     shadowOffset: { width: 0, height: 2 },
