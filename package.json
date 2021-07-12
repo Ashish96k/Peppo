@@ -8,12 +8,15 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "~1.15.0",
     "expo": "~42.0.1",
     "expo-status-bar": "~1.0.4",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-check-box": "^2.1.7",
+    "react-native-floating-action": "^1.21.0",
+    "react-native-modal": "^12.0.2",
     "react-native-responsive-fontsize": "^0.5.0",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-web": "~0.13.12"
