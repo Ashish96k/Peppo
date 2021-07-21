@@ -5,6 +5,13 @@ import { StyleSheet, Text, View } from "react-native";
 // Components
 import Home from "./src/screens/Home";
 
+// Context
+import { Pprovider } from "./src/context/Pcontext";
+
 export default function App() {
-  return <Home />;
+  return (
+    <Pprovider>
+      <Home />
+    </Pprovider>
+  );
 }

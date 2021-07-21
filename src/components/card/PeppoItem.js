@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -9,11 +9,15 @@ import CheckBox from "react-native-check-box";
 import { Feather } from "@expo/vector-icons";
 
 // Context
+import { Pcontext } from "../../context/Pcontext";
 import { constants } from "../../context/constants";
 
 const PeppoItem = (props) => {
+  // Context variables
+  const { peppoList, setPeppoList, saveToStorage } = useContext(Pcontext);
+
   // Prop Destructuring
-  const {} = props;
+  const { peppo } = props;
 
   const deleteAlert = () =>
     Alert.alert(
@@ -25,18 +29,39 @@ const PeppoItem = (props) => {
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
         },
-        { text: "OK", onPress: () => console.log("OK Pressed") },
+        { text: "OK", onPress: () => deletePeppoHandler(peppo.id) },
       ]
     );
+
+  // Handles the deletion of peppo's
+  const deletePeppoHandler = (id) => {
+    const filteredPeppoList = peppoList.filter((peppo) => peppo.id !== id);
+    setPeppoList(filteredPeppoList);
+    saveToStorage(filteredPeppoList);
+  };
+
+  // Complete a Peppo task handler
+  const completePeppoHandler = (id) => {
+    const updatedList = peppoList.map((peppo) =>
+      peppo.id === id
+        ? { ...peppo, isCompleted: peppo.isCompleted ? false : true }
+        : peppo
+    );
+    setPeppoList(updatedList);
+    saveToStorage(updatedList);
+  };
 
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemTextContainer}>
         <CheckBox
           style={{ flex: 1, padding: 10 }}
-          onClick={() => console.log("clicked")}
-          isChecked={false}
-          rightText={"Task 1"}
+          onClick={() => completePeppoHandler(peppo.id)}
+          isChecked={peppo.isCompleted}
+          rightText={peppo.name}
+          rightTextStyle={{
+            textDecorationLine: peppo.isCompleted ? "line-through" : "none",
+          }}
           checkedCheckBoxColor={constants.primary}
           uncheckedCheckBoxColor={constants.greyLight}
         />
@@ -58,7 +83,7 @@ const styles = StyleSheet.create({
     borderColor: constants.primary,
     borderRadius: 10,
     width: wp(90),
-    marginVertical: 10,
+    marginVertical: 6,
     marginHorizontal: 10,
     paddingVertical: 14,
     paddingHorizontal: 10,
@@ -66,7 +91,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 6,
-    elevation: 3,
+    elevation: 4,
   },
   itemTextContainer: {
     flex: 8,

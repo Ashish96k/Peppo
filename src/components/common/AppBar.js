@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import {
   widthPercentageToDP as wp,
@@ -10,9 +10,13 @@ import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import Spacing from "./Spacing";
 
 // Context
+import { Pcontext } from "../../context/Pcontext";
 import { constants } from "../../context/constants";
 
 const AppBar = () => {
+  // Context variables
+  const { pendingCount } = useContext(Pcontext);
+
   return (
     <View style={styles.headerContainer}>
       {/* Logo Section */}
@@ -33,7 +37,7 @@ const AppBar = () => {
           <Text style={styles.headerPendingText}>Pending Tasks</Text>
         </View>
         <View style={styles.headerPendingNumberContainer}>
-          <Text style={styles.headerPendingNumber}>6</Text>
+          <Text style={styles.headerPendingNumber}>{pendingCount}</Text>
         </View>
       </View>
 

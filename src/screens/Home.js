@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { StyleSheet, Text, View, ScrollView, Alert } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import {
   widthPercentageToDP as wp,
@@ -20,7 +20,9 @@ import Spacing from "../components/common/Spacing";
 import AddPeppo from "../components/input/AddPeppo";
 
 // Context
+import { Pcontext } from "../context/Pcontext";
 import { constants } from "../context/constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const actions = [
   {
@@ -30,6 +32,7 @@ const actions = [
     position: 1,
     textColor: "#ffffff",
     textBackground: "#ffffff00",
+    textElevation: 0,
   },
   {
     text: "Clear Peppo's",
@@ -44,26 +47,46 @@ const actions = [
     position: 2,
     textColor: "#ffffff",
     textBackground: "#ffffff00",
+    textElevation: 0,
+    color: "red",
   },
 ];
 
-const rawData = [
-  { id: 1, name: "Task 1", isCompleted: false },
-  { id: 2, name: "Task 2", isCompleted: false },
-  { id: 3, name: "Task 3", isCompleted: false },
-];
-
 const Home = (props) => {
+  // Context variables
+  const { peppoList, setPeppoList } = useContext(Pcontext);
+
   // State Variables
-  const [pepoList, setPepoList] = useState(rawData);
   const [inputModalOpen, setInputModalOpen] = useState(false);
 
   // Prop Destructuring
   const {} = props;
 
+  // Clear Peppo List Alert
+  const clearListAlert = () =>
+    Alert.alert(
+      "Empty Peppo's",
+      "Are you sure you want to delete all Peppo's ?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            setPeppoList([]);
+            AsyncStorage.removeItem("Peppos");
+          },
+        },
+      ]
+    );
+
   // handle FAB events
   const fabHandler = (event) => {
     if (event === "bt_add") setInputModalOpen(true);
+    if (event === "bt_clear") clearListAlert();
   };
 
   return (
@@ -75,14 +98,16 @@ const Home = (props) => {
       <View style={styles.bodyContainer}>
         {/* Title Section */}
         <View style={styles.titleContainer}>
-          <Title name="Total Task" number={4} />
+          <Title name="Total Task" number={peppoList.length} />
         </View>
 
         {/* Listing Section */}
         <View style={styles.listContainer}>
           <ScrollView>
-            {pepoList.length ? (
-              pepoList.map((pepo) => <PeppoItem pepo={pepo} key={pepo.id} />)
+            {peppoList.length ? (
+              peppoList.map((peppo) => (
+                <PeppoItem peppo={peppo} key={peppo.id} />
+              ))
             ) : (
               <View style={styles.doneContainer}>
                 <MaterialIcons
@@ -110,7 +135,7 @@ const Home = (props) => {
       />
 
       {/* Spacing */}
-      <Spacing vertical={20} />
+      {/* <Spacing vertical={20} /> */}
     </View>
   );
 };
@@ -122,13 +147,16 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     backgroundColor: "#fff",
-    flex: 1,
+    // flex: 1,
+    height: hp(80),
     alignItems: "center",
   },
   titleContainer: {
     paddingVertical: 20,
   },
-  listContainer: {},
+  listContainer: {
+    height: hp(65),
+  },
   doneContainer: {
     flex: 1,
     height: hp(40),

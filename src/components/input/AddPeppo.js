@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,13 +12,39 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+// import { v4 as uuidv4 } from "uuid";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// Components
+import Spacing from "../common/Spacing";
 
 // Context
+import { Pcontext } from "../../context/Pcontext";
 import { constants } from "../../context/constants";
 
 const AddPeppo = (props) => {
+  // Context variables
+  const { peppoList, setPeppoList, saveToStorage } = useContext(Pcontext);
+
+  // State Variables
+  const [task, setTask] = useState(null);
+
   // Prop Destructuring
   const { inputModalOpen, setInputModalOpen } = props;
+
+  // Adding a new Peppo
+  const newPeppoHandler = () => {
+    const taskBluePrint = {
+      id: peppoList.length ? peppoList[0].id + 1 : 0,
+      name: task,
+      isCompleted: false,
+    };
+    const newPeppoList = [taskBluePrint, ...peppoList];
+    setPeppoList(newPeppoList);
+    saveToStorage(newPeppoList);
+    setTask(null);
+    setInputModalOpen(false);
+  };
 
   return (
     <Modal
@@ -33,15 +59,24 @@ const AddPeppo = (props) => {
         </View>
         {/* Input Section */}
         <View style={styles.modalInputContiner}>
-          <TextInput style={styles.modalInput} placeholder="Enter Peppo" />
+          <TextInput
+            style={styles.modalInput}
+            placeholder="Enter Peppo"
+            value={task}
+            onChangeText={(text) => setTask(text)}
+            multiline={true}
+          />
         </View>
+
+        {/* Sized Box */}
+        <Spacing vertical={1} />
 
         {/* Button Section */}
         <View style={styles.modalButtonContainer}>
           <TouchableOpacity
             style={styles.modalButton}
             activeOpacity={0.7}
-            onPress={() => console.log("add peppo")}
+            onPress={newPeppoHandler}
           >
             <Text style={styles.modalButtonText}>ADD</Text>
           </TouchableOpacity>
@@ -54,9 +89,10 @@ const AddPeppo = (props) => {
 const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: "white",
-    height: hp(20),
-    justifyContent: "space-evenly",
+    // height: hp(20),
+    // justifyContent: "space-evenly",
     borderRadius: 20,
+    paddingVertical: 10,
   },
   modalTitleContainer: {
     // backgroundColor: "yellow",
@@ -71,6 +107,7 @@ const styles = StyleSheet.create({
   },
   modalInputContiner: {
     paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   modalInput: {
     borderBottomWidth: 1,
